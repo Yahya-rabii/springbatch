@@ -8,7 +8,6 @@ import javax.persistence.Id;
 
 @Entity
 public class Document {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,10 +19,14 @@ public class Document {
     private Long pdfFrGedId;
     private Long xmlGedId;
 
-    public Document() {}
 
-    public Document(Long id, String documentName, String pdfArProofStatus, String pdfFrProofStatus, String xmlProofStatus, Long pdfArGedId, Long pdfFrGedId, Long xmlGedId) {
-        this.id = id;
+    public Document() {
+    }
+
+
+
+    public Document(Long documentId, String documentName, String pdfArProofStatus, String pdfFrProofStatus, String xmlProofStatus, Long pdfArGedId, Long pdfFrGedId, Long xmlGedId) {
+        this.id = documentId;
         this.documentName = documentName;
         this.pdfArProofStatus = pdfArProofStatus;
         this.pdfFrProofStatus = pdfFrProofStatus;
@@ -33,19 +36,14 @@ public class Document {
         this.xmlGedId = xmlGedId;
     }
 
-    public Document(Long id, String documentName) {
-        this.id = id;
-        this.documentName =documentName;
-    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long documentId) {
+        this.id = documentId;
     }
-
 
     public String getDocumentName() {
         return documentName;

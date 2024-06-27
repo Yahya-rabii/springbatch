@@ -1,10 +1,9 @@
 i'm about to develop a spring batch app,
-this app will be automatically triggered twice a day
-this spring batch will do the next TASKS : we will get all the operations signed
+this app will be automatically triggered
+this spring batch will do the next TASKS :
 
-
-from the gateway using the next endpoint : localhost:9000/getSignedOperations
-the gateway's answer will be like this
+in a tasklet get all the operations signed from the next endpoint : localhost:9000/getSignedOperations
+the answer will be like this
   [
     {
       "operationId": 12121212,
@@ -29,11 +28,26 @@ the gateway's answer will be like this
         }]
     }
   ]
-within the same batch (in the created table in the database that contains these columns : documentId , documentName , PdfArProofStatus ,PdfFrProofStatus , XmlProofStatus , PdfArGedId ,PdfFrGedId , XmlGedId )
-using each operation id get the proofs (each document has 3 proofs one pdf file in arabic one pdf file in french and one xml file)
-of its document using the next endpoint in case the format is pdf and the language = ar/fr
+
+after getting the operations save them to the database in the table operation (operationId , list of documents)
+and save the documents in the database in the table document  documentId , documentName , PdfArProofStatus ,PdfFrProofStatus , XmlProofStatus , PdfArGedId ,PdfFrGedId , XmlGedId
+
+in the first job read the operations from the database and for each operation get all the proofs using each operation id
+(for each operation send 3 requests to get pdf ar proofs , pdf fr proofs and xml proofs)
+ using the next endpoint in case the format is pdf and the language = ar/fr
 http://localhost:9000/documents/proofs?operationId=%d&format=%s&language=%s
 and the following in case the format is xml
 http://localhost:9000/documents/proofs?operationId=%d&format=%s
-for each operation send 3 requests to the previous end points one to get all pdf ar proofs of operation second to get all pdf fr proofs and third to get all xml proofs
-the response will be the base 64 of the docs ... after getting all proofs save them to the database (GED) and get the ids of the saved proofs base 64 docs and then update the table with the ids of the proofs base 64 saved in the ged
+
+and save the proofs in the database in the table proof (proofId , proofBase64 , proofFormat , proofLanguage)
+
+in the second job read document table and proof table and for each document get the proofs from the proof table
+and start matching the proofs with the documents using the documentName and update the document table with the proofs ids and the proof status
+
+
+
+the code should be in java and using spring batch
+
+give me the complete code of the spring batch app
+
+(batchConfig , readers , writers , processors , jobs , jobLauncher , jobRepository , tasklets  , services , entities , repositories , controllers , etc..)

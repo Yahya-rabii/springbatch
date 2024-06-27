@@ -7,21 +7,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
 public class ProofService {
-
     @Autowired
     private ProofRepository proofRepository;
 
-    public List<Proof> saveAllProofs(List<Proof> proofs) {
+    public List<Proof> saveAll(List<Proof> proofs) {
         return proofRepository.saveAll(proofs);
     }
 
-    public void saveProof(Proof proof) {
-        proofRepository.save(proof);
-    }
-
-    public List<Proof> findAllByDocumentName(String documentName) {
-        return proofRepository.findAllByDocumentName(documentName);
+    public List<Proof> findAll() {
+        return proofRepository.findAll();
     }
 }
