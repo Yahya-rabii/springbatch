@@ -1,16 +1,12 @@
 package com.sgma.signaturebatch.config;
 
 import com.sgma.signaturebatch.domain.Document;
-import com.sgma.signaturebatch.domain.Operation;
 import com.sgma.signaturebatch.listener.JobCompletionNotificationListener;
 import com.sgma.signaturebatch.listener.StepExecutionListener;
-import com.sgma.signaturebatch.processor.OperationProcessor;
 import com.sgma.signaturebatch.processor.ProofProcessor;
 import com.sgma.signaturebatch.reader.DocumentReader;
-import com.sgma.signaturebatch.reader.OperationReader;
 import com.sgma.signaturebatch.tasklet.FetchOperationsTasklet;
 import com.sgma.signaturebatch.writer.DocumentWriter;
-import com.sgma.signaturebatch.writer.OperationWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -47,14 +43,13 @@ public class BatchConfig {
     }
 
     @Bean
-    public Job importOperationJob(JobCompletionNotificationListener listener, Step step1, Step step2, Step step3) {
+    public Job importOperationJob(JobCompletionNotificationListener listener, Step step1, Step step2) {
         log.info("Initializing importOperationJob...");
         return jobBuilderFactory.get("importOperationJob")
                 .incrementer(new RunIdIncrementer())
                 .listener(listener)
                 .start(step1)
                 .next(step2)
-                .next(step3)
                 .build();
     }
 
@@ -67,22 +62,11 @@ public class BatchConfig {
                 .build();
     }
 
-    @Bean
-    public Step step2(OperationReader operationReader, OperationProcessor operationProcessor, OperationWriter operationWriter) {
-        log.info("Configuring step2...");
-        return stepBuilderFactory.get("step2")
-                .<Operation, Operation>chunk(10)
-                .reader(operationReader)
-                .processor(operationProcessor)
-                .writer(operationWriter)
-                .listener(stepExecutionListener)
-                .build();
-    }
 
     @Bean
-    public Step step3(DocumentReader documentReader, ProofProcessor proofProcessor, DocumentWriter documentWriter) {
-        log.info("Configuring step3...");
-        return stepBuilderFactory.get("step3")
+    public Step step2(DocumentReader documentReader, ProofProcessor proofProcessor, DocumentWriter documentWriter) {
+        log.info("Configuring step2...");
+        return stepBuilderFactory.get("step2")
                 .<Document, Document>chunk(10)
                 .reader(documentReader)
                 .processor(proofProcessor)

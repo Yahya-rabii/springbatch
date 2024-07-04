@@ -60,15 +60,12 @@ public class ProofProcessor implements ItemProcessor<Document, Document> {
         String[] formats = {"PDF", "XML"};
         String[] languages = {"ar", "fr"};
 
-        List<Operation> operations = operationService.findAll();
-
-        for (Operation operation : operations) {
             List<Proof> proofs = new ArrayList<>();
             for (String format : formats) {
                 if (format.equals("PDF")) {
                     for (String language : languages) {
                         String url = String.format("http://localhost:9000/documents/proofs?operationId=%d&format=%s&language=%s",
-                                operation.getId(), format, language);
+                                document.getOperation().getId(), format, language);
                         Proof[] proofArray = fetchProofsWithRetry(url); // Use retry template
                         if (proofArray != null) {
                             Collections.addAll(proofs, proofArray);
@@ -76,7 +73,7 @@ public class ProofProcessor implements ItemProcessor<Document, Document> {
                     }
                 } else {
                     String url = String.format("http://localhost:9000/documents/proofs?operationId=%d&format=%s",
-                            operation.getId(), format);
+                            document.getOperation().getId(), format);
                     Proof[] proofArray = fetchProofsWithRetry(url); // Use retry template
                     if (proofArray != null) {
                         Collections.addAll(proofs, proofArray);
@@ -85,7 +82,6 @@ public class ProofProcessor implements ItemProcessor<Document, Document> {
             }
             proofService.saveAll(proofs);
             updateDocumentWithProofs(document, proofs);
-        }
         return document;
     }
 
